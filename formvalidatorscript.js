@@ -2,13 +2,13 @@ const form = document.getElementById('form');
 const username = document.getElementById('username');
 const email = document.getElementById('email');
 const password = document.getElementById('password');
-const passconfirm = document.getElementById('passconfirm')
+const password2 = document.getElementById('password2');
 
 // show error message
 function showError(input, message){
     const formField = input.parentElement;
     formField.className = "form-field error";
-    const small = formControl.querySelector('small');
+    const small = formField.querySelector('small');
     small.innerText = message;
 }
 
@@ -29,8 +29,8 @@ function emailValidation(input){
 } 
 
 // check all fields required
-function requirementCheck(inputArr){
-    inputArr.forEach(function(input) {
+function requirementCheck(inputArgument){
+    inputArgument.forEach(function(input) {
         if (input.value.trim() === ''){
             showError(input, `${getFieldName(input)} is required`);
         }   else{
@@ -56,7 +56,17 @@ function checkLength(input, min, max){
         showSuccess(input);
     }
 }
-  
+
+// check password requirements
+function passwordValidation(input) {
+    const reg = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{6,})/;
+    if (reg.test(input.value.trim())) {
+      showSuccess(input);
+    } else {
+      showError(input,'Password must be at least 6 characters, and include at least one uppercase letter, lowercase letter, number and symbol (!@#$%^&*)');
+    }
+  }
+
 //confirm passwords match
 function confirmPassword(input1,input2){
     if(input1.value !== input2.value){
@@ -73,9 +83,9 @@ function getFieldName(input){
 form.addEventListener('submit', function(e){
     e.preventDefault();
 
-    requirementCheck([username, email, password, passconfirm]);
+    requirementCheck([username, email, password, password2]);
     checkLength(username, 5, 15);
-    checkLength(password, 6, 30);
     emailValidation(email);
-    confirmPassword(password, passconfirm);
+    confirmPassword(password, password2);
+    passwordValidation(password);
 });
